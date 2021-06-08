@@ -32,6 +32,8 @@ internet.
 
 ## Background Problem
 
+Our goal for creating this project is to help the process of COVID-19 vaccine distribution faster so that we can reach the minimum 70% of total population to achieve national herd immunity for COVID-19.
+
 ## Tools
 - Python3
 - Jupyter Notebook and Google Colab
@@ -41,7 +43,7 @@ internet.
 - Streamlit Framework
 - Google Cloud Platform
 
-# Machine Learning Model
+## Machine Learning Model
 
 Our problem is really simple binary Classification with just using decision tree classifier as our main algorithm and several parameters that is provided from scikit-learn can easily reach up to ~99% test accuracy.
 
@@ -79,7 +81,7 @@ y_pred = dt.predict(X_test)
 # accuracy score
 accuracy_score(y_test, y_pred)
 ```
-### output
+#### output
 ```
 0.9180327868852459
 ```
