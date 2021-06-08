@@ -5,15 +5,22 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
+import matplotlib.pyplot as plt
+import shap
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
+st.set_option('deprecation.showPyplotGlobalUse', False)
 st.write("""
 # COVID-19 Screening-apps
 
 This app predicts the **COVID-19 Vaccination Screening** !
 
 """)
+
+# Loads dataset
+data_df = pd.read_csv('data.csv')
+data_df = data_df.iloc[:, 0:14]
 
 st.sidebar.header('User Input Features')
 
@@ -71,9 +78,6 @@ def user_input_features():
 input_df = user_input_features()
 
 
-# Displays the user input features
-st.subheader('User Input features')
-
 # Reads in saved classification model
 load_clf = pickle.load(open('clf.pkl', 'rb'))
 
@@ -82,10 +86,23 @@ prediction = load_clf.predict(input_df)
 prediction_proba = load_clf.predict_proba(input_df)
 
 
-st.subheader('Prediction')
+st.header('Prediction')
 
 vaccine = np.array(['Belum Bisa Divaksin', 'Bisa Divaksin'])
 st.write(vaccine[prediction])
 
 st.subheader('Prediction Probability')
 st.write(prediction_proba)
+
+
+explainer = shap.TreeExplainer(load_clf)
+shap_values = explainer.shap_values(data_df)
+
+st.header('Feature Importance')
+plt.title('Feature Importance for COVID-19 Vaccine Screening')
+
+st.write('---')
+
+plt.title('Feature importance based on SHAP values (Bar)')
+shap.summary_plot(shap_values, data_df, plot_type="bar")
+st.pyplot(bbox_inches='tight')
