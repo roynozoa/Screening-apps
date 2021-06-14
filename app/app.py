@@ -14,13 +14,23 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 st.write("""
 # COVID-19 Screening-apps
 
-This app predicts the **COVID-19 Vaccination Screening** !
+This app predicts the **COVID-19 Vaccination** Screening !!!
+
+
 
 """)
 
 # Loads dataset
 data_df = pd.read_csv('data.csv')
 data_df = data_df.iloc[:, 0:14]
+
+# get vaccination info
+time_data = pd.read_csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Indonesia.csv')
+time_data.drop(columns=['source_url'], inplace=True)
+time_data['date'] = pd.to_datetime(time_data['date'])
+time_data.set_index('date', inplace=True)
+time_data.drop(columns=['location', 'vaccine', 'total_vaccinations'], inplace=True)
+latest_date = time_data.index[-1]
 
 st.sidebar.header('User Input Features')
 
@@ -94,15 +104,43 @@ st.write(vaccine[prediction])
 st.subheader('Prediction Probability')
 st.write(prediction_proba)
 
+st.write('---')
+st.header('Vaccination Data in Indonesia')
+st.write(f'Latest update {latest_date.strftime("%A, %d %B %Y")}')
+st.write('''
+Data source from [Our World in data](https://ourworldindata.org/coronavirus-source-data)
 
-explainer = shap.TreeExplainer(load_clf)
-shap_values = explainer.shap_values(data_df)
+''')
 
-st.header('Feature Importance')
-plt.title('Feature Importance for COVID-19 Vaccine Screening')
+st.line_chart(time_data)
+# explainer = shap.TreeExplainer(load_clf)
+# shap_values = explainer.shap_values(data_df)
+
+# st.header('Feature Importance')
+# plt.title('Feature Importance for COVID-19 Vaccine Screening')
+
+
+
+# plt.title('Feature importance based on SHAP values (Bar)')
+# shap.summary_plot(shap_values, data_df, plot_type="bar")
+# st.pyplot()
 
 st.write('---')
 
-plt.title('Feature importance based on SHAP values (Bar)')
-shap.summary_plot(shap_values, data_df, plot_type="bar")
-st.pyplot(bbox_inches='tight')
+st.write('''
+For mor information about COVID-19 Vaccine in Indonesia please check Vaccine Dashboard from Kementerian Kesehatan RI
+[link](https://vaksin.kemkes.go.id/#/vaccines) 
+
+''')
+
+st.write('---')
+
+
+
+st.write("""
+### Our Team :
+- Muhammad Adisatriyo Pratama
+- Stefannov
+- Surya Asmoro
+
+""")
